@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import Label from "../component/label/Label";
 import Input from "../component/input/Input";
 import logo from "../assets/images/logo.png";
@@ -6,8 +6,11 @@ import { useForm } from "react-hook-form";
 import Button from "../component/button/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { async } from "@firebase/util";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase-app/firebase-config";
+import { AuthContext } from "../contexts/AuthContext";
 const schema = yup
   .object({
     email: yup.string().required("Please enter your Email"),
@@ -15,6 +18,7 @@ const schema = yup
   })
   .required();
 const SignInPage = () => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -22,7 +26,16 @@ const SignInPage = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmit = async () => {};
+  const { userInfo } = useContext(AuthContext);
+  // useEffect(() => {
+  //   if (!userInfo?.email) navigate("/sign-up");
+  //   else navigate("/");
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+  const onSubmit = async (data) => {
+    await signInWithEmailAndPassword(auth, data.email, data.password);
+    navigate("/");
+  };
 
   return (
     <div className="m-auto relative">

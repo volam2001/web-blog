@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
   const handle = () => {
     navigate("/sign-up");
   };
+  const { userinfo } = useContext(AuthContext);
+  console.log(userinfo);
   return (
     <>
       <div className="flex justify-between mx-[50px] mt-[40px]">
@@ -30,12 +33,22 @@ const Header = () => {
           </div>
 
           <div className="ml-[30px]">
-            <button
-              onClick={handle}
-              className=" bg-[#00B4AA] w-[160px] h-[50px]  text-[20px] text-white rounded-md "
-            >
-              SignUp
-            </button>
+            {!userinfo ? (
+              <button
+                onClick={handle}
+                className=" bg-[#00B4AA] w-[160px] h-[50px]  text-[20px] text-white rounded-md "
+              >
+                SignUp
+              </button>
+            ) : (
+              <p>
+                {" "}
+                <span className="font-semibold text-[18px]">WelCome back </span>
+                <span className="text-pink-500 font-medium ">
+                  {userinfo.displayName}
+                </span>
+              </p>
+            )}
           </div>
         </div>
       </div>
